@@ -7,7 +7,14 @@
  */
 import 'react-native-reanimated';
 import React, {useState, useEffect} from 'react';
-import {Button, Dimensions, StyleSheet, Text, View} from 'react-native';
+import {
+  Button,
+  Dimensions,
+  PermissionsAndroid,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   Camera,
   useCameraDevices,
@@ -36,6 +43,18 @@ export default function App() {
     (async () => {
       const status = await Camera.requestCameraPermission();
       setHasPermission(status === 'authorized');
+
+      await Camera.requestMicrophonePermission();
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Write Permission',
+          message: 'RNCamera0 need write permission',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
     })();
   }, []);
 
@@ -108,7 +127,7 @@ export default function App() {
         device={device}
         isActive={true}
         frameProcessor={frameProcessor}
-        frameProcessorFps={24}
+        frameProcessorFps={1}
         videoStabilizationMode={true}
       />
       <View
